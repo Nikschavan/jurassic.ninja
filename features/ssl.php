@@ -20,16 +20,26 @@ add_action(
 			function ( &$app, $features ) use ( $defaults ) {
 				$features = array_merge( $defaults, $features );
 
-				// Schedule a single cron event to trigger after 20 seconds.
-				// This is to give the site time to be provisioned and ready to be accessed.
-				wp_schedule_single_event(
-					time(),
-					'jurassic_ninja_enable_ssl',
-					array(
-						$app->id,
-						$features,
-					)
-				);
+				$response = provisioner()->enable_auto_ssl( $app->id );
+
+				if ( is_wp_error( $response ) ) {
+					// Add the SSL on cron, to avoid 
+					wp_schedule_single_event(
+						time() + 10,
+						'jurassic_ninja_enable_ssl',
+						array(
+							$app->id,
+							$features,
+						)
+					);
+				} else {
+					// Force ssl on the site.
+					$response = provisioner()->force_ssl_redirection( $app->id );
+
+					if ( is_wp_error( $response ) ) {
+						throw new \Exception( 'Error forcing SSL redirection: ' . $response->get_error_message() );
+					}
+				}
 			},
 			10,
 			3
