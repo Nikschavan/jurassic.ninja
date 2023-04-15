@@ -88,6 +88,26 @@ class ServerPilotProvisioner {
 		try {
 			$response = $this->serverpilot_instance->sysuser_create( settings( 'serverpilot_server_id' ), $username, $password );
 			$this->wait_for_serverpilot_action( $response->actionid );
+
+			$sshkey_id = settings( 'serverpilot_ssh_key_id' );
+			wp_remote_post(
+				'https://api.serverpilot.io/v1/sysusers/' . $response->data->id . '/sshkeys',
+				array(
+					'headers' => array(
+						'Content-Type' => 'application/json',
+					),
+					'body'    => wp_json_encode(
+						array(
+							'sshkey_id' => $sshkey_id,
+						)
+					),
+					'auth'    => array(
+						settings( 'serverpilot_client_id' ),
+						settings( 'serverpilot_api_key' ),
+					),
+				)
+			);
+
 			return $response->data;
 		} catch ( \Exception $e ) {
 			return new \WP_Error( $e->getCode(), $e->getMessage() );
@@ -350,6 +370,11 @@ add_action(
 						'serverpilot_client_key' => array(
 							'id' => 'serverpilot_client_key',
 							'title' => __( 'ServerPilot Key', 'jurassic-ninja' ),
+							'text' => __( 'A ServerPilot Client key.', 'jurassic-ninja' ),
+						),
+						'serverpilot_ssh_key_id' => array(
+							'id' => 'serverpilot_ssh_key_id',
+							'title' => __( 'SSH Key id to be added for each new system user', 'jurassic-ninja' ),
 							'text' => __( 'A ServerPilot Client key.', 'jurassic-ninja' ),
 						),
 					),
