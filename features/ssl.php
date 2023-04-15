@@ -19,15 +19,45 @@ add_action(
 			'jurassic_ninja_add_features_after_create_app',
 			function ( &$app, $features ) use ( $defaults ) {
 				$features = array_merge( $defaults, $features );
-				if ( $features['auto_ssl'] ) {
-					// Currently not a feature of Jurassic Ninja but the code works.
-					provisioner()->enable_auto_ssl( $app->id );
-				} else {
-					provisioner()->add_ssl_certificate( $app->id );
-				}
+
+				// Schedule a single cron event to trigger after 5 minutes.
+				// This is to give the site time to be provisioned and ready to be accessed.
+				wp_schedule_single_event(
+					time() + 5 * MINUTE_IN_SECONDS,
+					'jurassic_ninja_enable_ssl',
+					array(
+						$app->id,
+						$features,
+					)
+				);
 			},
 			10,
 			3
+		);
+
+		add_action(
+			'jurassic_ninja_enable_ssl',
+			function ( $app_id, $features ) use ( $defaults ) {
+				$features = array_merge( $defaults, $features );
+
+				if ( $features['auto_ssl'] ) {
+					// Currently not a feature of Jurassic Ninja but the code works.
+					$response = provisioner()->enable_auto_ssl( $app_id );
+
+					if ( is_wp_error( $response ) ) {
+						throw new \Exception( 'Error enabling auto SSL: ' . $response->get_error_message() );
+					}
+
+					// Force ssl on the site.
+					$response = provisioner()->force_ssl_redirection( $app_id );
+
+					if ( is_wp_error( $response ) ) {
+						throw new \Exception( 'Error forcing SSL redirection: ' . $response->get_error_message() );
+					}
+				}
+			},
+			10,
+			2
 		);
 
 		add_action(
