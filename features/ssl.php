@@ -20,10 +20,10 @@ add_action(
 			function ( &$app, $features ) use ( $defaults ) {
 				$features = array_merge( $defaults, $features );
 
-				// Schedule a single cron event to trigger after 5 minutes.
+				// Schedule a single cron event to trigger after 20 seconds.
 				// This is to give the site time to be provisioned and ready to be accessed.
 				wp_schedule_single_event(
-					time() + 1 * MINUTE_IN_SECONDS,
+					time() + 20,
 					'jurassic_ninja_enable_ssl',
 					array(
 						$app->id,
