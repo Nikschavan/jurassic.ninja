@@ -88,22 +88,18 @@ class ServerPilotProvisioner {
 		try {
 			$response = $this->serverpilot_instance->sysuser_create( settings( 'serverpilot_server_id' ), $username, $password );
 			$this->wait_for_serverpilot_action( $response->actionid );
-
 			$sshkey_id = settings( 'serverpilot_ssh_key_id' );
 			wp_remote_post(
 				'https://api.serverpilot.io/v1/sysusers/' . $response->data->id . '/sshkeys',
 				array(
 					'headers' => array(
 						'Content-Type' => 'application/json',
+						'Authorization' => 'Basic ' . base64_encode( settings( 'serverpilot_client_id' ) . ':' . settings( 'serverpilot_client_key' ) ),
 					),
 					'body'    => wp_json_encode(
 						array(
 							'sshkey_id' => $sshkey_id,
 						)
-					),
-					'auth'    => array(
-						settings( 'serverpilot_client_id' ),
-						settings( 'serverpilot_api_key' ),
 					),
 				)
 			);
