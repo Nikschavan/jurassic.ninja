@@ -23,7 +23,7 @@ add_action(
 				// Schedule a single cron event to trigger after 20 seconds.
 				// This is to give the site time to be provisioned and ready to be accessed.
 				wp_schedule_single_event(
-					time() + 20,
+					time(),
 					'jurassic_ninja_enable_ssl',
 					array(
 						$app->id,
