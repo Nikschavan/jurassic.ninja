@@ -11,7 +11,7 @@ add_action(
 	'jurassic_ninja_init',
 	function () {
 		$defaults = array(
-			'auto_ssl' => false,
+			'auto_ssl' => true,
 			'ssl' => false,
 		);
 
