@@ -45,6 +45,8 @@ function launchSite( $, features, resetSpinner = false ) {
 		jurassicNinjaApi().create( features )
 			.then( response => {
 				var successMessage = $( '#progress' ).data().successMessage;
+				// Make the URL https.
+				response.data.url = response.data.url.replace( /^http:/, 'https:' );
 				$( '#progress' ).html( `<a href="${ response.data.url }">${ successMessage }</a>` );
 				stopSpinner();
 				favicon_update_colour( 'green' );

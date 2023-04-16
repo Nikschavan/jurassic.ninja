@@ -146,7 +146,7 @@ function add_scripts() {
 		'wp_enqueue_scripts',
 		function () {
 			if ( page_is_launching_page() ) {
-				wp_enqueue_script( 'jurassicninja.js', plugins_url( '', __FILE__ ) . '/jurassicninja.js', array( 'jquery' ), '1.1', true );
+				wp_enqueue_script( 'jurassicninja.js', plugins_url( '', __FILE__ ) . '/jurassicninja.js', array( 'jquery' ), '1.2', true );
 				/**
 				 * Done after enqueueing the jurassic.ninja.js file
 				 *
