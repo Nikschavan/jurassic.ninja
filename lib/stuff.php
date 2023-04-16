@@ -341,18 +341,25 @@ function figure_out_main_domain( $domains ) {
  * @param  [type] $dbpassword        The database password this WordPress will use.
  */
 function install_wordpress_with_cli( $domain, $wordpress_options, $dbname, $dbusername, $dbpassword ) {
+	// If domain does not have a protocol, add https://
+	if ( ! preg_match( '#^https?://#', $domain ) ) {
+		$domain = 'https://' . $domain;
+	}
+
 	$cmd = sprintf(
 		'wp core download'
 		. ' && wp config create --dbname="%s" --dbuser="%s" --dbpass="%s"'
-		. ' && wp core install --url="%s" --title="%s" --admin_user="%s" --admin_password="%s" --admin_email="%s"',
+		. ' && wp core install --url="%s" --title="%s" --admin_user="%s" --admin_password="%s" --admin_email="%s && wp option update site_url %s && wp option update home %s"',
 		$dbname,
 		$dbusername,
 		$dbpassword,
-		set_url_scheme( $domain, 'https' ),
+		$domain,
 		$wordpress_options['site_title'],
 		$wordpress_options['admin_user'],
 		$wordpress_options['admin_password'],
-		$wordpress_options['admin_email']
+		$wordpress_options['admin_email'],
+		$domain,
+		$domain,
 	);
 	add_filter(
 		'jurassic_ninja_feature_command',
