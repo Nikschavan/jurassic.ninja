@@ -348,7 +348,7 @@ function install_wordpress_with_cli( $domain, $wordpress_options, $dbname, $dbus
 		$dbname,
 		$dbusername,
 		$dbpassword,
-		$domain,
+		set_url_scheme( $domain, 'https' ),
 		$wordpress_options['site_title'],
 		$wordpress_options['admin_user'],
 		$wordpress_options['admin_password'],
