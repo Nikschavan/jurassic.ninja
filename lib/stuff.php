@@ -350,7 +350,7 @@ function install_wordpress_with_cli( $domain, $wordpress_options, $dbname, $dbus
 	$cmd = sprintf(
 		'wp core download'
 		. ' && wp config create --dbname="%s" --dbuser="%s" --dbpass="%s"'
-		. ' && wp core install --url="%s" --title="%s" --admin_user="%s" --admin_password="%s" --admin_email="%s && wp option update site_url \'%s\' && wp option update home \'%s\'"',
+		. ' && wp core install --url="%s" --title="%s" --admin_user="%s" --admin_password="%s" --admin_email="%s" && wp option update site_url "%s" && wp option update home "%s"',
 		$dbname,
 		$dbusername,
 		$dbpassword,
