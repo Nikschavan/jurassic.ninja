@@ -25,7 +25,7 @@ add_action(
 				if ( is_wp_error( $response ) ) {
 					// Add the SSL on cron, to avoid 
 					wp_schedule_single_event(
-						time() + 20,
+						time() + 10,
 						'jurassic_ninja_enable_ssl',
 						array(
 							$app->id,
